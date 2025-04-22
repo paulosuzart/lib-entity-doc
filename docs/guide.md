@@ -18,3 +18,5 @@ LibEntity is a powerful (and fun!) Java library for building type-safe, state-dr
 | **Maintainability**      | High: changes in one place, less code rot                                   | Medium/Low: changes ripple through many files         |
 
 > **Summary:** > `lib-entity` lets you build robust, maintainable, and testable domain logic with far less code and cognitive overhead. You get all the benefits of Hexagonal Architecture, but with a declarative, beginner-friendly approach and much less boilerplate. Perfect for teams who value both flexibility and productivity.
+
+[Spring Integration Guide](./spring/) — Learn how to use LibEntity with Spring.

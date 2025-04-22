@@ -12,6 +12,12 @@ export default defineConfig({
       { text: 'Concepts', link: '/concepts/' },
       { text: 'Examples', link: '/examples' },
       { text: 'API', link: '/api' },
+      {
+        text: 'Integrations',
+        items: [
+          { text: 'Spring Boot', link: '/spring/' },
+        ]
+      }
     ],
 
     sidebar: [
@@ -31,6 +37,12 @@ export default defineConfig({
           { text: 'Actions', link: '/concepts/actions' },
           { text: 'Filters', link: '/concepts/filters' },
         ],
+      },
+      {
+        text: 'Integrations',
+        items: [
+          { text: 'Spring Boot', link: '/spring/' },
+        ]
       },
     ],
 
