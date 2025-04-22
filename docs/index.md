@@ -100,4 +100,4 @@ LibEntity helps you build robust business applications by providing:
 - **State Management**: Built-in state machine with transitions
 - **Spring Integration**: Ready for enterprise applications
 
-[Get started](/guides/quick-start/) with LibEntity today!
+[Get started](/guide) with LibEntity today!
