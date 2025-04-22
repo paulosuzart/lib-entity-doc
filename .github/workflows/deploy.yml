@@ -24,7 +24,7 @@ jobs:
         run: npm run docs:build
 
       - name: Disable Jekyll
-        run: touch docs/.vitepress/dist/.nojekyll        
+        run: touch docs/.vitepress/dist/.nojekyll
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4

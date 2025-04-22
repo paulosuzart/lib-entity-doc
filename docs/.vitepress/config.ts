@@ -40,7 +40,8 @@ export default defineConfig({
   },
 
   // Theme configuration
-  appearance: 'light',
+  appearance: 'dark',
+  base: '/lib-entity-doc/',
 
   // Custom CSS
   head: [
