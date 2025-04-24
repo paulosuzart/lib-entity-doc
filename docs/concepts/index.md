@@ -13,4 +13,3 @@ Operations that can be performed on entities, encapsulating business logic and s
 
 ## [Filters](/concepts/filters)
 You can generate filters automatically or by hand to speed up your development with production grade dynamic filter structure.
-
