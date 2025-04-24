@@ -22,6 +22,8 @@ LibEntity is a powerful (and fun!) Java library for building type-safe, state-dr
 
 A metamodel is a model of a model. In the context of LibEntity, a metamodel is a model of your entity types. The prebuilt metamodel brings structure to your services while keeping good flexibility and a exit path at any point in time.
 
+A metamodel is what allows you to move fast. Most systems are "literal", that means they are too granular, and you end up with a lot of code, a lot of testing surface, and a lot of maintenance burdern that blocks your business to react fast. LibEntity metamodel is a balance between granularity and simplicity.
+
 LibEntity metamodel is as follows:
 
 ```mermaid

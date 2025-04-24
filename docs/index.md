@@ -3,7 +3,7 @@ layout: home
 
 hero:
   name: LibEntity
-  text: Type-safe, state-driven business entities for Java
+  text: Type-safe, state-driven business entity metamodel for Java
   tagline: Build robust domain logic with less code and more confidence. Perfect for teams who value both flexibility and productivity.
   actions:
     - theme: brand
@@ -92,13 +92,8 @@ EntityType<InvoiceState, Invoice, Object> invoiceType = EntityType.<InvoiceState
 
 ## Why LibEntity?
 
-LibEntity helps you build robust business applications by providing:
+A [metamodel](https://en.wikipedia.org/wiki/Metamodeling) is what allows you to move fast. Most systems are "literal", that means they are too granular, and you end up with a lot of code, a lot of testing surface, and a lot of maintenance burdern that blocks your business to react fast. LibEntity metamodel is a balance between granularity and simplicity.
 
-- **Type Safety**: Catch errors at compile time, not runtime
-- **Clean Architecture**: Separate business logic from infrastructure
-- **Flexible Validation**: Custom rules and error handling
-- **State Management**: Built-in state machine with transitions
-- **Spring Integration**: Ready for enterprise applications
-- **Dynamic Filters**: LibEntity brings structure to dynamic filters by providing a flexible, type-safe filter system.
+While not a new concept, LibEntity's metamodel is a unique take on the idea that provides a powerful yet simple way structure your applications by packing years of experience in a simple and declarative DSL.
 
 [Get started](/guide) with LibEntity today!
