@@ -5,7 +5,6 @@
 >   
 > The guide below shows how to implement this workflow using libentity, jOOQ, and Spring Boot.
 
----
 
 ## 1. Project Setup
 
@@ -17,8 +16,6 @@ implementation 'com.libentity:jooq-support:<latest-version>'
 implementation 'org.springframework.boot:spring-boot-starter'
 implementation 'org.jooq:jooq'
 ```
-
----
 
 ## 2. Define Your Entity
 
@@ -38,8 +35,6 @@ public class Invoice {
     private InvoiceState state = InvoiceState.DRAFT; // Default state
 }
 ```
-
----
 
 ## 3. Define the Entity Type (Validation, Actions, State)
 
@@ -91,7 +86,6 @@ This configuration:
 - Adds validation logic for states and transitions
 - Sets up the business rules for your workflow
 
----
 
 ## 4. Create a Filter Class
 
@@ -120,7 +114,6 @@ public class InvoiceFilter {
 
 The annotation processor will generate meta-classes for you, reducing boilerplate.
 
----
 
 ## 5. Repository Layer
 
@@ -151,7 +144,6 @@ public class InvoiceRepository {
 }
 ```
 
----
 
 ## 6. Service Layer
 
@@ -219,8 +211,6 @@ public class InvoiceActionController {
 }
 ```
 
----
-
 ## 8. Example: Filtering Invoices
 
 To filter invoices, POST to `/invoice/action/filter` with a JSON body like:
@@ -235,7 +225,6 @@ To filter invoices, POST to `/invoice/action/filter` with a JSON body like:
 
 The response will be a list of invoices matching your criteria.
 
----
 
 ## 9. Example: Executing Actions
 
@@ -250,8 +239,6 @@ To execute an action (like approve, reject, etc.), POST to `/invoice/action` wit
   }
 }
 ```
-
----
 
 ## Summary
 

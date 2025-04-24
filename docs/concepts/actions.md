@@ -47,5 +47,24 @@ Actions can be restricted to certain states and further gated using the `onlyIf`
 
 - Centralize business logic
 - Make state transitions explicit
-- Enforce validation and security rules
+- Enforce validation and security rules regardless of request source
 - Enable dynamic discovery of available actions (see advanced features)
+
+## Action Execution
+
+Actions are executed by calling the `execute` method of the provide implementation of `ActionExecutor<S, R>`. The default implementation provided by `SyncActionExecutor<S, R>` works as follows:
+
+```mermaid
+flowchart TD
+    A((Start: execute)) --> B{Find Action by Name}
+    B -- "Not Found" --> Z[Throw IllegalArgumentException]
+    B -- "Found" --> C{Command Type Matches?}
+    C -- "No" --> Y[Throw IllegalArgumentException]
+    C -- "Yes" --> D[Create StateMutator]
+    D --> E[Call action]
+    E --> F{hasErrors?}
+    F -- "Yes" --> X[Throw ValidationException]
+    F -- "No" --> G[Return ActionResult]
+```
+
+If the default implementation of `ActionExecutor` is not sufficient, you can provide your own implementation of `ActionExecutor<S, R>`.

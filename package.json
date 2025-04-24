@@ -8,6 +8,7 @@
     "start": "vitepress dev docs"
   },
   "devDependencies": {
-    "vitepress": "latest"
+    "vitepress": "latest",
+    "vitepress-plugin-mermaid": "^2.0.17"
   }
 }

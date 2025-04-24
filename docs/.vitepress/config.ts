@@ -1,21 +1,27 @@
 import { defineConfig } from 'vitepress';
+import { withMermaid } from 'vitepress-plugin-mermaid'
 
 // refer https://vitepress.dev/reference/site-config for details
-export default defineConfig({
+export default withMermaid(defineConfig({
   lang: 'en-US',
   title: 'LibEntity',
   description: 'Type-safe, state-driven business entities for Java',
+
+  markdown: {
+    config: (md) => {
+      // mermaid(md)
+    }
+  },
 
   themeConfig: {
     nav: [
       { text: 'Guide', link: '/guide' },
       { text: 'Concepts', link: '/concepts/' },
-      { text: 'Examples', link: '/examples' },
-      { text: 'API', link: '/api' },
       {
         text: 'Integrations',
         items: [
-          { text: 'Spring Boot', link: '/spring/' },
+          { text: 'Spring Boot', link: '/integrations/spring/' },
+          { text: 'Jooq', link: '/integrations/jooq/' },
         ]
       }
     ],
@@ -41,7 +47,8 @@ export default defineConfig({
       {
         text: 'Integrations',
         items: [
-          { text: 'Spring Boot', link: '/spring/' },
+          { text: 'Spring Boot', link: '/integrations/spring/' },
+          { text: 'Jooq', link: '/integrations/jooq/' },
         ]
       },
     ],
@@ -52,7 +59,7 @@ export default defineConfig({
   },
 
   // Theme configuration
-  appearance: 'dark',
+  appearance: 'light',
   base: '/lib-entity-doc/',
 
   // Custom CSS
@@ -107,4 +114,4 @@ export default defineConfig({
     `,
     ],
   ],
-});
+}));

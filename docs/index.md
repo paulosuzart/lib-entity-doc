@@ -21,7 +21,7 @@ features:
     title: State Machine Transitions
     details: Define clear state transitions and validations for your business entities
   - icon: ✅
-    title: Built-in Validation
+    title: Bring your own Validation
     details: Comprehensive validation system with easy error handling
   - icon: 🎯
     title: Action-based Commands
@@ -99,5 +99,6 @@ LibEntity helps you build robust business applications by providing:
 - **Flexible Validation**: Custom rules and error handling
 - **State Management**: Built-in state machine with transitions
 - **Spring Integration**: Ready for enterprise applications
+- **Dynamic Filters**: LibEntity brings structure to dynamic filters by providing a flexible, type-safe filter system.
 
 [Get started](/guide) with LibEntity today!
