@@ -57,36 +57,37 @@ static class SubmitInvoiceCommand implements ActionCommand {
     public String getActionName() { return "submit"; }
 }
 
-// ... (other command classes omitted for brevity)
+// ... 
 
-EntityType<InvoiceState, Invoice, Object> invoiceType = EntityType.<InvoiceState, Invoice, Object>builder("Invoice")
+var invoiceEntityType = EntityType.<InvoiceState, InvoiceRequest>builder("Invoice")
     .field("amount", BigDecimal.class, f -> f
-        .validateInState(InvoiceState.DRAFT, (state, entityData, request, ctx) -> {
-            if (entityData.getAmount() != null && entityData.getAmount().compareTo(new BigDecimal("10000")) > 0) {
+        .validateInState(InvoiceState.DRAFT, (state, request, ctx) -> {
+            if (request.invoice().getAmount() != null && request.invoice().getAmount().compareTo(new BigDecimal("10000")) > 0) {
                 ctx.addError("AMOUNT_TOO_LARGE", "Amount cannot exceed 10,000");
             }
         })
     )
-    .field("vat", BigDecimal.class, f -> f
-        .validateInState(InvoiceState.DRAFT, (state, entityData, request, ctx) -> {
-            if (entityData.getVat() == null || entityData.getVat().compareTo(BigDecimal.ZERO) < 0) {
-                ctx.addError("VAT_INVALID", "VAT cannot be negative");
-            }
-        })
-    )
-    .action("submit", a -> a
-        .description("Submit invoice for approval")
-        .allowedStates(Set.of(InvoiceState.DRAFT))
-        .onlyIf(entityData -> entityData.getAmount() != null && entityData.getAmount().compareTo(BigDecimal.ZERO) > 0)
-        .commandType(SubmitInvoiceCommand.class)
-        .handler((state, request, command, entityData, mutator) -> {
-            entityData.setReadyForApproval(true);
-            entityData.setSubmitterId(command.getSubmitterId());
-            entityData.setSubmitterDeviceId(command.getSubmitterDeviceId());
-            mutator.setState(InvoiceState.PENDING);
-        })
-    )
-    // ... (other actions omitted for brevity)
+    .field("vat",
+           BigDecimal.class, f -> 
+           f.validateInState(InvoiceState.DRAFT, (state, request, ctx) -> {
+                if (request.invoice().getVat() == null) {
+                    ctx.addError("VAT_REQUIRED", "VAT is required");
+                }
+            })
+    ).<SubmitInvoiceCommand>action("submit", a ->
+            a.allowedStates(Set.of(InvoiceState.DRAFT))
+             .commandType(SubmitInvoiceCommand.class)
+             .onlyIf((state, request, command) ->
+                request.invoice().getAmount() != null
+                    && request.invoice().getAmount().compareTo(BigDecimal.ZERO) > 0
+                    && request.invoice().getAmount().compareTo(new BigDecimal("10000")) <= 0)
+        .handler((state, request, command, mutator) -> {
+            request.invoice().setReadyForApproval(true);
+            request.invoice().setSubmitterId(command.getSubmitterId());
+            request.invoice().setSubmitterDeviceId(command.getSubmitterDeviceId());
+            mutator.setState(InvoiceState.PENDING_APPROVAL);
+        }))
+    // ... 
     .build();
 ```
 
