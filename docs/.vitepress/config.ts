@@ -16,7 +16,7 @@ export default withMermaid(defineConfig({
   themeConfig: {
     footer: {
       message: 'Released under the MIT License. Made with ☕, 💡 and lots of Java love.',
-      copyright: 'Copyright © 2019-present Paulo Suzart'
+      copyright: 'Copyright © 2025-present Paulo Suzart'
     },
     nav: [
       { text: 'Guide', link: '/guide' },
