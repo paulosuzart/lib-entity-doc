@@ -91,6 +91,33 @@ var invoiceEntityType = EntityType.<InvoiceState, InvoiceRequest>builder("Invoic
     .build();
 ```
 
+LibEntity also offers an annotation-based DSL for defining entity types, actions, and validators. Check out the [Annotations](/integrations/annotations/) section for more details. Here is a sneak peek:
+
+```java
+@ActionHandlerFor(entity = "Invoice")
+public class InvoiceActionHandler {
+    @Handle
+    @Action(name = "submitInvoice", allowedStates = {"DRAFT"})
+    public void handle(InvoiceState state, InvoiceRequest request, SubmitInvoiceCommand command, StateMutator<InvoiceState> mutator) {
+        mutator.setState(InvoiceState.PENDING_APPROVAL);
+    }
+
+    @OnlyIf
+    @Action(name = "submitInvoice")
+    public boolean canSubmit(InvoiceState state, InvoiceRequest request, SubmitInvoiceCommand command) {
+        return request.getAmount() > 0;
+    }
+}
+
+@EntityCommand(action = "submitInvoice")
+@Data
+@AllArgsConstructor
+public class SubmitInvoiceCommand {
+    private final String submitDate;
+    private final String submitterId;
+}
+```
+
 ## Why LibEntity?
 
 A [metamodel](https://en.wikipedia.org/wiki/Metamodeling) is what allows you to move fast. Most systems are "literal", that means they are too granular, and you end up with a lot of code, a lot of testing surface, and a lot of maintenance burdern that blocks your business to react fast. LibEntity metamodel is a balance between granularity and simplicity.
@@ -98,3 +125,4 @@ A [metamodel](https://en.wikipedia.org/wiki/Metamodeling) is what allows you to 
 While not a new concept, LibEntity's metamodel is a unique take on the idea that provides a powerful yet simple way structure your applications by packing years of experience in a simple and declarative DSL.
 
 [Get started](/guide) with LibEntity today!
+

@@ -24,6 +24,7 @@ export default withMermaid(defineConfig({
       {
         text: 'Integrations',
         items: [
+          { text: 'Annotations', link: '/integrations/annotations/' },
           { text: 'Spring Boot', link: '/integrations/spring/' },
           { text: 'Jooq', link: '/integrations/jooq/' },
         ]
@@ -51,6 +52,7 @@ export default withMermaid(defineConfig({
       {
         text: 'Integrations',
         items: [
+          { text: 'Annotations', link: '/integrations/annotations/' },
           { text: 'Spring Boot', link: '/integrations/spring/' },
           { text: 'Jooq', link: '/integrations/jooq/' },
         ]
