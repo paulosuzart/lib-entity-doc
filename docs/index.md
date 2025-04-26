@@ -3,8 +3,8 @@ layout: home
 
 hero:
   name: LibEntity
-  text: Type-safe, state-driven business entity metamodel for Java
-  tagline: Build robust domain logic with less code and more confidence. Perfect for teams who value both flexibility and productivity.
+  text: Type-safe, state-driven metamodel for Java
+  tagline: Build robust domain logic with less code and more confidence.
   actions:
     - theme: brand
       text: Get Started
@@ -30,13 +30,12 @@ features:
 
 ## Quick Example
 
-### Java DSL
+Use the LibEntity [Java DSL](/concepts/) to define your entities, transitions, actions, and validators. LibEntity also offers an [annotation-based](/integrations/annotations/) DSL for defining entity types, actions, and validators.
 
-Use the LibEntity Java DSL to define your entities, transitions, actions, and validators.
 
-*Jump to the [section](#annotation-dsl) below for the annotation DSL.*
+::: code-group
 
-```java
+```java [JavaDsl.java]
 public enum InvoiceState {
     DRAFT,
     PENDING,
@@ -97,11 +96,7 @@ var invoiceEntityType = EntityType.<InvoiceState, InvoiceRequest>builder("Invoic
     .build();
 ```
 
-### Annotation DSL
-
-LibEntity also offers an annotation-based DSL for defining entity types, actions, and validators. Check out the [Annotations](/integrations/annotations/) section for more details. Here is a sneak peek:
-
-```java
+```java [AnnotationDsl.java]
 @ActionHandlerFor(entity = "Invoice")
 public class InvoiceActionHandler {
     @Handle
@@ -126,8 +121,7 @@ public class SubmitInvoiceCommand {
 }
 ```
 
-Learn more about annotation support [here](/integrations/annotations/).
-
+:::
 ## Why LibEntity?
 
 A [metamodel](https://en.wikipedia.org/wiki/Metamodeling) is what allows you to move fast. Most systems are "literal", that means they are too granular, and you end up with a lot of code, a lot of testing surface, and a lot of maintenance burdern that blocks your business to react fast. LibEntity metamodel is a balance between granularity and simplicity.
