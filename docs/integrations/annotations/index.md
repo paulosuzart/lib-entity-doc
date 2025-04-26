@@ -10,8 +10,17 @@ This module provides an annotation-based DSL for defining entity types, actions,
 | Action Definition    | `@Handle`, `@Action`, `@OnlyIf` on methods        | `.action("name", ...)`                      |
 | Validator Definition | `@InStateValidator`, `@TransitionValidator`       | `.inStateValidator(...)`, `.transitionValidator(...)` |
 | Command Type         | POJO + `@EntityCommand(action = ...)`             | Must implement `ActionCommand` interface    |
+| **Command Interface** | **❌ Not required!** Just use `@EntityCommand`    | ✅ Must implement `ActionCommand`           |
 | Allowed States       | `@Action(allowedStates = {"STATE"})`             | `.allowedStates(EnumSet.of(...))`           |
 | Extensibility        | Add new annotations or handlers                   | Extend builder or entity classes            |
+
+::: tip No More Boilerplate!
+With the annotation-based DSL, your command objects **do not need to implement any interfaces**. Just annotate your POJO with `@EntityCommand` and you're done!
+
+- No more empty `getActionName()` methods.
+- No more marker interfaces.
+- Cleaner, more idiomatic Java code.
+:::
 
 ---
 
@@ -54,6 +63,13 @@ EntityType<InvoiceState, InvoiceRequest> invoiceType = EntityType.builder("Invoi
     )
     .build();
 ```
+
+## Why No Interface Requirement Is a Big Deal
+
+- **Less Boilerplate:** Your commands can be plain Java classes—no need for extra methods or inheritance.
+- **Easier Refactoring:** Rename, move, or refactor your commands freely without breaking contracts.
+- **Better Integration:** Works seamlessly with records, Lombok, and other POJO-friendly tools.
+- **Framework Agnostic:** Your domain model stays decoupled from framework interfaces.
 
 ## Executing Actions on Annotated Entities
 
