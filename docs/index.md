@@ -30,6 +30,12 @@ features:
 
 ## Quick Example
 
+### Java DSL
+
+Use the LibEntity Java DSL to define your entities, transitions, actions, and validators.
+
+*Jump to the [section](#annotation-dsl) below for the annotation DSL.*
+
 ```java
 public enum InvoiceState {
     DRAFT,
@@ -91,6 +97,8 @@ var invoiceEntityType = EntityType.<InvoiceState, InvoiceRequest>builder("Invoic
     .build();
 ```
 
+### Annotation DSL
+
 LibEntity also offers an annotation-based DSL for defining entity types, actions, and validators. Check out the [Annotations](/integrations/annotations/) section for more details. Here is a sneak peek:
 
 ```java
@@ -117,6 +125,8 @@ public class SubmitInvoiceCommand {
     private final String submitterId;
 }
 ```
+
+Learn more about annotation support [here](/integrations/annotations/).
 
 ## Why LibEntity?
 

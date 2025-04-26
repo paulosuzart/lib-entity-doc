@@ -91,12 +91,18 @@ You need to create an instance of `EntityAnnotationProcessor` and call `buildEnt
         assertEquals("user-123", actualCmd.getSubmitterId());
     }
 ```
+::: info
+By default EntityAnnotationProcessor uses reflection to instantiate the actions and validators. You can provide a custom instance factory to use a different method.
+You can use LibEntity's [instance factory](/integrations/annotations/instance-factory.md) for this purpose and have limitless options.
+:::
+
 
 ## Features
 - **Declarative Action & Validator Registration:** Define actions, guards, and validators using simple annotations.
 - **Command Flexibility:** Commands can be POJOs with `@EntityCommand`, no need to implement interfaces.
 - **Type Safety:** The processor checks handler signatures and state names at build time.
 - **Integration:** Outputs real `EntityType` objects compatible with the core engine.
+- **Custom Instance Factory:** The processor can be configured to use a custom instance factory for creating entities. See [Instance Factories for Actions and Validators](./instance-factory.md).
 
 ## How It Works
 - Annotate your handler and validator classes/methods.
@@ -107,9 +113,10 @@ You need to create an instance of `EntityAnnotationProcessor` and call `buildEnt
 - Prefer this module if you want a quick, annotation-driven, and beginner-friendly way to define entities.
 - Use the builder DSL for maximum flexibility, advanced composition, or meta-programming.
 
-## Limitations
+## :warning: Limitations
 - `allowedStates` in annotations must be strings due to Java annotation restrictions (see docs for rationale).
-- For maximum type safety, use the builder DSL.
+- There's currently no special annotations for field declarations.
+- For maximum type safety, flexibility and dynamicity, use the builder DSL.
 
 ---
 
