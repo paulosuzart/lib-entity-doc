@@ -4,15 +4,16 @@ This module provides an annotation-based DSL for defining entity types, actions,
 
 ## Quick Comparison: Annotation DSL vs. Core DSL
 
-| Feature               | Annotation DSL (This Module)                      | Core DSL (`library` module)                 |
-|----------------------|---------------------------------------------------|---------------------------------------------|
-| Entity Definition    | `@ActionHandlerFor(entity = ...)`                  | `EntityType.builder("...")`                |
-| Action Definition    | `@Handle`, `@Action`, `@OnlyIf` on methods        | `.action("name", ...)`                      |
-| Validator Definition | `@InStateValidator`, `@TransitionValidator`       | `.inStateValidator(...)`, `.transitionValidator(...)` |
-| Command Type         | POJO + `@EntityCommand(action = ...)`             | Must implement `ActionCommand` interface    |
-| **Command Interface** | **❌ Not required!** Just use `@EntityCommand`    | ✅ Must implement `ActionCommand`           |
-| Allowed States       | `@Action(allowedStates = {"STATE"})`             | `.allowedStates(EnumSet.of(...))`           |
-| Extensibility        | Add new annotations or handlers                   | Extend builder or entity classes            |
+| Feature                   | Annotation DSL (This Module)                                      | Core DSL (`library` module)                                    |
+|--------------------------|-------------------------------------------------------------------|----------------------------------------------------------------|
+| **Entity Definition**     | `@EntityDefinition` on class, fields/actions as annotation attrs   | `EntityType.builder("...")` with chained `.field(...)`, etc.  |
+| **Field Definition**      | `@Field` array in `@EntityDefinition(fields = {...})`             | `.field("name", Type.class, f -> f.validateInState(...))`     |
+| **Validator Definition**  | `validators` in `@Field`, `inStateValidators`, `transitionValidators` in `@EntityDefinition` | `.validateInState(...)`, `.validateStateTransition(...)`        |
+| **Action Definition**     | `@Action` in `actions` in `@EntityDefinition`, handler class with `@Handle` and `@OnlyIf` methods | `.action("name", ActionBuilder.forHandler(...).onlyIf(...).build("name"))` |
+| **Command Type**          | POJO with `@EntityCommand(action = "...")`                      | Any class implementing `ActionCommand`                          |
+| **Allowed States**        | `@Action(allowedStates = {"STATE"})` in `@EntityDefinition`      | `.allowedStates(EnumSet.of(...))` in builder                    |
+| **Availability Predicate**| `@OnlyIf` method in action handler                                | `.onlyIf(...)` in action builder                                |
+| **Extensibility**         | Add new annotations, handler classes, or validators               | Compose new builder chains, extend builder/entity classes       |
 
 ::: tip No More Boilerplate!
 With the annotation-based DSL, your command objects **do not need to implement any interfaces**. Just annotate your POJO with `@EntityCommand` and you're done!
@@ -24,45 +25,90 @@ With the annotation-based DSL, your command objects **do not need to implement a
 
 ---
 
-## Example: Annotation-Based Entity Definition
+## Example: Annotation-Based Entity Definition (Payment Domain)
 
 ```java
-@ActionHandlerFor(entity = "Invoice")
-public class InvoiceActionHandler {
+// 1. State Enum
+enum PaymentState {
+    DRAFT,
+    PENDING_APPROVAL,
+    APPROVED
+}
+
+// 2. Request and Command Types
+@Data
+@AllArgsConstructor
+class PaymentRequest {
+    private final int amount;
+}
+
+@EntityCommand(action = "submitPayment")
+@Data
+@AllArgsConstructor
+class SubmitPaymentCommand {
+    private final String submitDate;
+    private final String submitterId;
+}
+
+// 3. Action Handler
+public class PaymentActionHandler {
     @Handle
-    @Action(name = "submitInvoice", allowedStates = {"DRAFT"})
-    public void handle(InvoiceState state, InvoiceRequest request, SubmitInvoiceCommand command, StateMutator<InvoiceState> mutator) {
-        mutator.setState(InvoiceState.PENDING_APPROVAL);
+    public void handle(PaymentState state, PaymentRequest request, SubmitPaymentCommand command) {
+        // Implement state mutation logic if needed
     }
 
     @OnlyIf
-    @Action(name = "submitInvoice")
-    public boolean canSubmit(InvoiceState state, InvoiceRequest request, SubmitInvoiceCommand command) {
+    public boolean canSubmit(PaymentState state, PaymentRequest request, SubmitPaymentCommand command) {
         return request.getAmount() > 0;
     }
 }
 
-@EntityCommand(action = "submitInvoice")
-@Data
-@AllArgsConstructor
-public class SubmitInvoiceCommand {
-    private final String submitDate;
-    private final String submitterId;
-}
+// 4. Entity Definition
+@EntityDefinition(
+    name = "Payment",
+    stateEnum = PaymentState.class,
+    fields = {
+        @Field(
+            name = "amount",
+            type = int.class,
+            required = true,
+            validators = {SampleAmountValidator.class}
+        )
+    },
+    actions = {
+        @Action(name = "submitPayment", description = "Submit a payment", handler = PaymentActionHandler.class)
+    },
+    inStateValidators = {SampleAmountValidator.class},
+    transitionValidators = {SampleTransitionValidator.class}
+)
+public class PaymentEntityConfig {}
 ```
 
 ## Example: Core (Builder) DSL
 
 ```java
-EntityType<InvoiceState, InvoiceRequest> invoiceType = EntityType.builder("Invoice")
-    .action("submitInvoice", ActionBuilder
-        .forHandler((state, request, command, mutator) -> mutator.setState(InvoiceState.PENDING_APPROVAL))
+EntityType<PaymentState, PaymentRequest> paymentType = EntityType.builder("Payment")
+    .action("submitPayment", ActionBuilder
+        .forHandler((state, request, command, mutator) -> mutator.setState(PaymentState.APPROVED))
         .onlyIf((state, request, command) -> request.getAmount() > 0)
-        .allowedStates(EnumSet.of(InvoiceState.DRAFT))
-        .build("submitInvoice")
+        .allowedStates(EnumSet.of(PaymentState.DRAFT))
+        .build("submitPayment")
     )
     .build();
 ```
+
+---
+
+## Features
+- **Declarative Action & Validator Registration:** Define actions, guards, and validators using simple annotations.
+- **Command Flexibility:** Commands can be POJOs with `@EntityCommand`, no need to implement interfaces.
+- **Type Safety:** The processor checks handler signatures and state names at build time.
+- **Integration:** Outputs real `EntityType` objects compatible with the core engine.
+
+## How It Works
+- Annotate your handler and validator classes/methods.
+- The annotation processor scans for these annotations and builds a registry of entity types and actions.
+- At runtime, actions and validators are invoked via reflection and proxies, ensuring compatibility with the core engine.
 
 ## Why No Interface Requirement Is a Big Deal
 
@@ -71,68 +117,48 @@ EntityType<InvoiceState, InvoiceRequest> invoiceType = EntityType.builder("Invoi
 - **Better Integration:** Works seamlessly with records, Lombok, and other POJO-friendly tools.
 - **Framework Agnostic:** Your domain model stays decoupled from framework interfaces.
 
-## Executing Actions on Annotated Entities
-
-The `annotation-support` module offers a `EntityProcessor` capable of scanning your classes and generating the `EntityType` from these classes. 
-
-::: warning
-Some validations are enforced during stacan time. It's recommended to scan the classes during tests and the startup of your application.
-:::
-
-You need to create an instance of `EntityAnnotationProcessor` and call `buildEntityTypes` method. The method returns a map of entity types that cane buse later used by the `ActionExecutor`.
-
-```java
-    @Test
-    public void testSyncActionExecutorExecutesSampleAction() {
-        // Build EntityType from annotation processor
-        EntityAnnotationProcessor processor = new EntityAnnotationProcessor();
-        Map<String, EntityType<?, ?>> entityTypes = processor.buildEntityTypes("com.libentity.annotation.processor");
-        EntityType<TestInvoiceState, InvoiceRequest> entityType = (EntityType<TestInvoiceState, InvoiceRequest>) entityTypes.get("Invoice");
-
-        // Prepare executor
-        SyncActionExecutor<TestInvoiceState, InvoiceRequest> executor = new SyncActionExecutor<>(entityType);
-        ValidationContext ctx = new ValidationContext();
-        TestInvoiceState initialState = TestInvoiceState.DRAFT;
-        InvoiceRequest request = new InvoiceRequest("INV-123", 100.0);
-        SubmitInvoiceCommand cmd = new SubmitInvoiceCommand("2025-04-26", "user-123");
-        // Execute
-        var result = executor.execute(initialState, request, ctx, cmd);
-        // Assert state transition
-        assertEquals(TestInvoiceState.PENDING_APPROVAL, result.getState());
-        assertEquals("INV-123", result.getRequest().getInvoiceNumber());
-        assertEquals(100.0, result.getRequest().getAmount());
-        // Assert command payload
-        SubmitInvoiceCommand actualCmd = (SubmitInvoiceCommand) result.getCommand();
-        assertEquals("2025-04-26", actualCmd.getSubmitDate());
-        assertEquals("user-123", actualCmd.getSubmitterId());
-    }
-```
-::: info
-By default EntityAnnotationProcessor uses reflection to instantiate the actions and validators. You can provide a custom instance factory to use a different method.
-You can use LibEntity's [instance factory](/integrations/annotations/instance-factory.md) for this purpose and have limitless options.
-:::
-
-
-## Features
-- **Declarative Action & Validator Registration:** Define actions, guards, and validators using simple annotations.
-- **Command Flexibility:** Commands can be POJOs with `@EntityCommand`, no need to implement interfaces.
-- **Type Safety:** The processor checks handler signatures and state names at build time.
-- **Integration:** Outputs real `EntityType` objects compatible with the core engine.
-- **Custom Instance Factory:** The processor can be configured to use a custom instance factory for creating entities. See [Instance Factories for Actions and Validators](./instance-factory.md).
-
-## How It Works
-- Annotate your handler and validator classes/methods.
-- The annotation processor scans for these annotations and builds a registry of entity types and actions.
-- At runtime, actions and validators are invoked via reflection and proxies, ensuring compatibility with the core engine.
-
 ## When to Use
 - Prefer this module if you want a quick, annotation-driven, and beginner-friendly way to define entities.
 - Use the builder DSL for maximum flexibility, advanced composition, or meta-programming.
 
 ## :warning: Limitations
 - `allowedStates` in annotations must be strings due to Java annotation restrictions (see docs for rationale).
-- There's currently no special annotations for field declarations.
-- For maximum type safety, flexibility and dynamicity, use the builder DSL.
+- For maximum type safety, use the builder DSL.
+
+## Instance Factories for Actions and Validators
+
+By default, the annotation processor creates new handler and validator instances using reflection. For advanced scenarios, such as integration with Spring or custom DI frameworks, you can supply a custom instance factory:
+
+```java
+EntityAnnotationProcessor processor = new EntityAnnotationProcessor(clazz -> applicationContext.getBean(clazz));
+```
+
+Or for manual/test-scoped instances:
+```java
+PaymentActionHandler handler = new PaymentActionHandler();
+EntityAnnotationProcessor processor = new EntityAnnotationProcessor(clazz -> {
+    if (clazz.equals(PaymentActionHandler.class)) return handler;
+    return clazz.getDeclaredConstructor().newInstance();
+});
+```
+
+This allows seamless integration with dependency injection frameworks or test doubles, making your annotated actions and validators highly flexible and testable.
+
+### Using with Spring
+
+To integrate with Spring, you can provide an instance factory that looks up beans from the Spring `ApplicationContext`. This allows your handlers and validators to be regular Spring beans with full dependency injection:
+
+```java
+import org.springframework.context.ApplicationContext;
+
+ApplicationContext applicationContext = ...; // inject or obtain context
+EntityAnnotationProcessor processor = new EntityAnnotationProcessor(clazz -> applicationContext.getBean(clazz));
+```
+
+Register your action handlers and validators as `@Component` or `@Service` beans. The processor will use Spring to instantiate and inject dependencies as needed.
+
+*In the future, a dedicated `annotation-support-spring` module may be provided for even smoother integration.*
+
 
 ---
 

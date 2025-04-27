@@ -97,28 +97,60 @@ var invoiceEntityType = EntityType.<InvoiceState, InvoiceRequest>builder("Invoic
 ```
 
 ```java [AnnotationDsl.java]
-@ActionHandlerFor(entity = "Invoice")
-public class InvoiceActionHandler {
+// 1. State Enum
+enum PaymentState {
+    DRAFT,
+    PENDING_APPROVAL,
+    APPROVED
+}
+
+// 2. Request and Command Types
+@Data
+@AllArgsConstructor
+class PaymentRequest {
+    private final int amount;
+}
+
+@EntityCommand(action = "submitPayment")
+@Data
+@AllArgsConstructor
+class SubmitPaymentCommand {
+    private final String submitDate;
+    private final String submitterId;
+}
+
+// 3. Action Handler
+public class PaymentActionHandler {
     @Handle
-    @Action(name = "submitInvoice", allowedStates = {"DRAFT"})
-    public void handle(InvoiceState state, InvoiceRequest request, SubmitInvoiceCommand command, StateMutator<InvoiceState> mutator) {
-        mutator.setState(InvoiceState.PENDING_APPROVAL);
+    public void handle(PaymentState state, PaymentRequest request, SubmitPaymentCommand command) {
+        // Implement state mutation logic if needed
     }
 
     @OnlyIf
-    @Action(name = "submitInvoice")
-    public boolean canSubmit(InvoiceState state, InvoiceRequest request, SubmitInvoiceCommand command) {
+    public boolean canSubmit(PaymentState state, PaymentRequest request, SubmitPaymentCommand command) {
         return request.getAmount() > 0;
     }
 }
 
-@EntityCommand(action = "submitInvoice")
-@Data
-@AllArgsConstructor
-public class SubmitInvoiceCommand {
-    private final String submitDate;
-    private final String submitterId;
-}
+// 4. Entity Definition
+@EntityDefinition(
+    name = "Payment",
+    stateEnum = PaymentState.class,
+    fields = {
+        @Field(
+            name = "amount",
+            type = int.class,
+            required = true,
+            validators = {SampleAmountValidator.class}
+        )
+    },
+    actions = {
+        @Action(name = "submitPayment", description = "Submit a payment", handler = PaymentActionHandler.class)
+    },
+    inStateValidators = {SampleAmountValidator.class},
+    transitionValidators = {SampleTransitionValidator.class}
+)
+public class PaymentEntityConfig {}
 ```
 
 :::
