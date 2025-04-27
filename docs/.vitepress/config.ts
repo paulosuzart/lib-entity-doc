@@ -56,7 +56,8 @@ export default withMermaid(defineConfig({
             text: 'Annotations',
             items: [
               { text: 'Overview', link: '/integrations/annotations/' },
-              { text: 'Instance Factories', link: '/integrations/annotations/instance-factory' }
+              { text: 'Instance Factories', link: '/integrations/annotations/instance-factory' },
+              { text: 'Requirements', link: '/integrations/annotations/requirements' }
             ]
           },
           { text: 'Spring Boot', link: '/integrations/spring/' },
