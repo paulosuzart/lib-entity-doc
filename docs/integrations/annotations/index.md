@@ -10,13 +10,13 @@ This module provides an annotation-based DSL for defining entity types, actions,
 | **Field Definition**      | `@Field` array in `@EntityDefinition(fields = {...})`             | `.field("name", Type.class, f -> f.validateInState(...))`     |
 | **Validator Definition**  | `validators` in `@Field`, `inStateValidators`, `transitionValidators` in `@EntityDefinition` | `.validateInState(...)`, `.validateStateTransition(...)`        |
 | **Action Definition**     | `@Action` in `actions` in `@EntityDefinition`, handler class with `@Handle` and `@OnlyIf` methods | `.action("name", ActionBuilder.forHandler(...).onlyIf(...).build("name"))` |
-| **Command Type**          | POJO with `@EntityCommand(action = "...")`                      | Any class implementing `ActionCommand`                          |
+| **Command Type**          | Simple POJO                      | Any class implementing `ActionCommand`                          |
 | **Allowed States**        | `@Action(allowedStates = {"STATE"})` in `@EntityDefinition`      | `.allowedStates(EnumSet.of(...))` in builder                    |
 | **Availability Predicate**| `@OnlyIf` method in action handler                                | `.onlyIf(...)` in action builder                                |
 | **Extensibility**         | Add new annotations, handler classes, or validators               | Compose new builder chains, extend builder/entity classes       |
 
-::: tip No More Boilerplate!
-With the annotation-based DSL, your command objects **do not need to implement any interfaces**. Just annotate your POJO with `@EntityCommand` and you're done!
+::: info No More Boilerplate!
+With the annotation-based DSL, your command objects **do not need to implement any interfaces**.
 
 - No more empty `getActionName()` methods.
 - No more marker interfaces.
