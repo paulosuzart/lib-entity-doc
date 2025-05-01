@@ -145,7 +145,7 @@ public class PaymentActionHandler {
         )
     },
     actions = {
-        @Action(name = "submitPayment", description = "Submit a payment", handler = PaymentActionHandler.class)
+        @Action(name = "submitPayment", description = "Submit a payment", handler = PaymentActionHandler.clas, command = SubmitPaymentCommand.class)
     },
     inStateValidators = {SampleAmountValidator.class},
     transitionValidators = {SampleTransitionValidator.class}

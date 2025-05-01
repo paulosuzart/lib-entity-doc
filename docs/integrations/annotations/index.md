@@ -125,25 +125,6 @@ EntityType<PaymentState, PaymentRequest> paymentType = EntityType.builder("Payme
 - `allowedStates` in annotations must be strings due to Java annotation restrictions (see docs for rationale).
 - For maximum type safety, use the builder DSL.
 
-## Instance Factories for Actions and Validators
-
-By default, the annotation processor creates new handler and validator instances using reflection. For advanced scenarios, such as integration with Spring or custom DI frameworks, you can supply a custom instance factory:
-
-```java
-EntityAnnotationProcessor processor = new EntityAnnotationProcessor(clazz -> applicationContext.getBean(clazz));
-```
-
-Or for manual/test-scoped instances:
-```java
-PaymentActionHandler handler = new PaymentActionHandler();
-EntityAnnotationProcessor processor = new EntityAnnotationProcessor(clazz -> {
-    if (clazz.equals(PaymentActionHandler.class)) return handler;
-    return clazz.getDeclaredConstructor().newInstance();
-});
-```
-
-This allows seamless integration with dependency injection frameworks or test doubles, making your annotated actions and validators highly flexible and testable.
-
 ## Requirements for Annotated Methods
 
 When using the annotation-based DSL, your handler and validator methods must follow strict signature requirements to ensure correct processing. Here are the requirements for each type:
@@ -157,7 +138,10 @@ When using the annotation-based DSL, your handler and validator methods must fol
 - **Example:**
   ```java
   @Handle
-  public void handle(PaymentState state, PaymentRequest req, SubmitPaymentCommand cmd, StateMutator mutator) {
+  public void handle(PaymentState state, 
+                     PaymentRequest req, 
+                     SubmitPaymentCommand cmd, 
+                     StateMutator<PaymentState> mutator) {
       // ...
   }
   ```
