@@ -111,7 +111,6 @@ class PaymentRequest {
     private final int amount;
 }
 
-@EntityCommand(action = "submitPayment")
 @Data
 @AllArgsConstructor
 class SubmitPaymentCommand {
@@ -145,7 +144,7 @@ public class PaymentActionHandler {
         )
     },
     actions = {
-        @Action(name = "submitPayment", description = "Submit a payment", handler = PaymentActionHandler.clas, command = SubmitPaymentCommand.class)
+        @Action(name = "submitPayment", description = "Submit a payment", handler = PaymentActionHandler.class, command = SubmitPaymentCommand.class)
     },
     inStateValidators = {SampleAmountValidator.class},
     transitionValidators = {SampleTransitionValidator.class}
