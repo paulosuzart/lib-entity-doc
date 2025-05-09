@@ -5,13 +5,20 @@ It is also possible to use the annotation-based DSL with Spring Boot.
 ## Define the `EntityTypeRegistry` bean
 
 ```java
-@Bean
-@Qualifier("entityTypeRegistryPayment")
-public EntityTypeRegistry entityTypeRegistry() {
-    EntityAnnotationProcessor processor = new EntityAnnotationProcessor();
-    return processor.buildEntityTypes("com.libentity.example.model");
-}
+    @Bean
+    @Qualifier("entityTypeRegistryPayment")
+    public EntityTypeRegistry entityTypeRegistry(ApplicationContext context) {
+        var options = new EntityAnnotationProcessor.Options(context::getBean);
+
+        EntityAnnotationProcessor processor = new EntityAnnotationProcessor(options);
+        return processor.buildEntityTypes("com.libentity.example.model");
+    }
+
 ```
+
+::: warning Important
+EntityAnnotationProcessor.Options is used to provide a custom instance factory to the processor. The factory is used to look up fo beans in the spring context. In this case our class annotated with `@EntityDefinition` points to actions whose handlers are Spring beans.
+:::
 
 The `EntityTypeRegistry` bean is used to resolve entity types and actions. It stores the entities that were scanned by the EntityAnnotationProcessor.
 
