@@ -25,6 +25,7 @@ export default withMermaid(defineConfig({
         text: 'Integrations',
         items: [
           { text: 'Annotations', link: '/integrations/annotations/' },
+          { text: 'LibEntity Decision', link: '/integrations/decision/' },
           { text: 'Spring Boot', link: '/integrations/spring/' },
           { text: 'Jooq', link: '/integrations/jooq/' },
         ]
@@ -60,6 +61,7 @@ export default withMermaid(defineConfig({
               { text: 'Requirements', link: '/integrations/annotations/requirements' }
             ]
           },
+          { text: 'LibEntity Decision', link: '/integrations/decision/' },   
           { text: 'Spring Boot', items : [
             { text: 'Overview', link: '/integrations/spring/' },
             { text: 'Annotations', link: '/integrations/spring/spring-with-annotations' },
