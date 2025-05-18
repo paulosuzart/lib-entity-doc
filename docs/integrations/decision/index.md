@@ -155,6 +155,61 @@ The rules can be formed by arbitrary code, or preferredly by using matchers. Her
 The especial `Rule.test` takes a predicate and returns a `Rule<T>` that matches if the predicate returns true. The produced `Rule` for each matcher
 can be used to be negated with a `not()` call. For example `Rule.is("Samba").not().evaluate("Rock")` will evaluate to `true`.
 
+## Why Not Just Write Plain Java?
+
+For small or isolated decisions, using plain Java logic might seem simpler:
+
+```java
+if (blockedRequesters.contains(requesterId)
+        && isDateSet != null
+        && amount.compareTo(BigDecimal.ZERO) > 0) {
+    return false;
+}
+
+if (amount.compareTo(BigDecimal.ONE) > 0) {
+    return true;
+}
+
+return false;
+```
+
+While this is readable at first glance, it becomes problematic as business rules evolve:
+
+❌ Scattered logic: Rules get embedded across services, controllers, and utilities.
+
+❌ Poor traceability: It’s hard to answer “Why did this invoice fail?” or “What rule applied?”
+
+❌ Limited diagnostics: No built-in insight into which rule matched or failed.
+
+❌ Hard to test in isolation: Rules are often coupled to state and environment.
+
+❌ High change risk: Modifying logic can introduce subtle regressions.
+
+Advantages of LibEntity Decision
+LibEntity Decision was designed to mitigate these issues:
+
+✅ Centralized rules: Business rules are defined in one place using structured, testable constructs.
+
+✅ Declarative API: Rules are expressed as data, not control flow, making them easier to read and change.
+
+✅ Traceability: Rule matches are fully diagnosable via .diagnose(), allowing introspection into decision outcomes.
+
+✅ Policied evaluation: Choose between First, Unique, or Collect evaluation strategies for different business needs.
+
+✅ Auto-generated support: @DecisionInput eliminates boilerplate and enforces type safety.
+
+✅ Composable matchers: Clean, reusable, and composable rule conditions like isSet(), in(...), or gt(...).
+
+| Feature                    | Manual Java Logic      | LibEntity Decision         |
+|---------------------------|------------------------|-----------------------------|
+| Code structure            | Imperative, scattered  | Declarative, centralized    |
+| Diagnosability            | Manual logging         | Built-in `.diagnose()`      |
+| Rule composition          | Custom logic per case  | Matchers & rules            |
+| Maintainability           | Risky with complexity  | Scales with complexity      |
+| Testability               | Often tightly coupled  | Fully testable in isolation |
+| Evolution of logic        | Requires refactoring   | Rules can be reordered safely |
+
+
 ## Future explorations
 
 At the moment evaluation happens eagerly and Policies are used as a way to extract the results. Future explorations may include a lazy evaluation approach, moving the evaluation
