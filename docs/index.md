@@ -22,7 +22,9 @@ features:
     details: Define clear state transitions and validations for your business entities
   - icon: ✅
     title: Bring your own Validation
-    details: Comprehensive validation system with easy error handling. Or use our [Decision](/integrations/decision/) integration.
+    details: Comprehensive validation system with easy error handling.
+    link: /integrations/decision/
+    linkText: Or use our Decision integration.
   - icon: 🎯
     title: Action-based Commands
     details: Clean command pattern implementation for all entity operations
