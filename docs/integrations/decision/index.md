@@ -1,7 +1,7 @@
 # LibEntity Decision
 
 ## Overview
-LibEntity Decision is a decision engine that can be used to make decisions based on business rules. 
+LibEntity Decision is a decision engine that can be used to make decisions based on a meta-model for business rules. It consolidates LibEntity by bringing structure to this very sensitive aspect of business entities.
 
 Given the action and transition structure, one can use ordinary java code to implement the business rules. But over time, rules tend to fall through the cracks and become obscure, hard to maintain and understand.
 
@@ -150,7 +150,7 @@ The rules can be formed by arbitrary code, or preferredly by using matchers. Her
 - `Rule.lt(T target)`: Matches if the value is less than the given value.
 - `Rule.le(T target)`: Matches if the value is less than or equal to the given value.
 - `Rule.is(T target)`: Matches if the value is equal to the given value.
-- `Rule.isPresent()`: Matches if the value is not null.
+- `Rule.isPresent()`: Matches if the value is not null. If it's an Optional, it matches if it is present.
 
 ### Boolean logic
 
