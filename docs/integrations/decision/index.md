@@ -33,6 +33,10 @@ public class InvoiceInput {
 }
 ```
 
+::: warning Important
+At the moment only classes with public/default attributes are supported. Soon records and access via getters will be supported.
+:::
+
 The `@DecisionInput` annotation will generate a value class and a `InputProvider` interface implementation. More on that later.
 
 ### Create your rules
@@ -51,7 +55,7 @@ var rules = List.of(
                     // in matches if the attribute is in the set
                     in(blockedRequesters),
                     // it is true if the attribute is present
-                    isSet(),
+                    isPresent(),
                     // gt fo greater than
                     gt(BigDecimal.valueOf(0.0)),
                     any()),
@@ -91,10 +95,6 @@ var decision = decisionTable.evaluateFirst(
                 BigDecimal.valueOf(1.0),
                 "true"));
 
-if (decision.getOutput().isEmpty()
-        || Boolean.FALSE.equals(decision.getOutput().get())) {
-    throw new RuntimeException("Create invoice failed due to decision table: " + decision.getOutput());
-}
 ```
 
 ## Diagnose
@@ -106,19 +106,21 @@ Hit Policy: First
 Result: Optional[true]
 Input: 
   requesterId: user1
-  isDateSet: 2025-05-28
+  isDateSet: 2025-05-29
   amount: 100
-  isApproved: null
+  isApproved: "true"
 Rule 0 [f]:
-  requesterId  [f]: in( 0e9a2aed-741e-47a9-b0f2-357e2621f8a3, 777ea383-3f6e-4c9c-b8e7-d02cb37f5bc1, 98c8627c-2203-4f0b-8d0a-adea7150f6c6 )
-  isDateSet    [f]: isSet
-  amount       [f]: > 0.0
-  isApproved   [f]: -
+  requesterId  [f]: in( 2a9ad172-9f2f-4dbc-9093-6dbb20b5b07e, 98c8627c-2203-4f0b-8d0a-adea7150f6c6, 95c50ae5-4b4a-44f7-b8ca-fe00b7de8524 )
+  isDateSet    [t]: isPresent
+  amount       [t]: > 0.0
+  isApproved   [t]: -
+  == x
 Rule 1 [t]:
   requesterId  [t]: -
   isDateSet    [t]: -
   amount       [t]: > 1.0
   isApproved   [t]: -
+  == true
   ```
 
   The way to read is as follows:
@@ -148,7 +150,7 @@ The rules can be formed by arbitrary code, or preferredly by using matchers. Her
 - `Rule.lt(T target)`: Matches if the value is less than the given value.
 - `Rule.le(T target)`: Matches if the value is less than or equal to the given value.
 - `Rule.is(T target)`: Matches if the value is equal to the given value.
-- `Rule.isSet()`: Matches if the value is not null.
+- `Rule.isPresent()`: Matches if the value is not null.
 
 The especial `Rule.test` takes a predicate and returns a `Rule<T>` that matches if the predicate returns true. The produced `Rule` for each matcher
 can be used to be negated with a `not()` call. For example `Rule.is("Samba").not().evaluate("Rock")` will evaluate to `true`.
