@@ -152,8 +152,12 @@ The rules can be formed by arbitrary code, or preferredly by using matchers. Her
 - `Rule.is(T target)`: Matches if the value is equal to the given value.
 - `Rule.isPresent()`: Matches if the value is not null.
 
-The especial `Rule.test` takes a predicate and returns a `Rule<T>` that matches if the predicate returns true. The produced `Rule` for each matcher
+### Negate and boolean logic
+
+The especial `Rule.test` takes a predicate and returns a `Rule<T>` that matches if the predicate returns `true`. The produced `Rule` for each matcher
 can be used to be negated with a `not()` call. For example `Rule.is("Samba").not().evaluate("Rock")` will evaluate to `true`.
+
+Similarly, `Rule<T>.and(other)` and `Rule<T>.or(other)` can be used to combine rules into more complex structures.
 
 ## Why Not Just Write Plain Java?
 
