@@ -181,7 +181,7 @@ While this is readable at first glance, it becomes problematic as business rules
 
 ❌ Scattered logic: Rules get embedded across services, controllers, and utilities.
 
-❌ Poor traceability: It’s hard to answer “Why did this invoice fail?” or “What rule applied?”
+❌ Poor traceability: It’s hard to answer “Why did this payment transition fail?” or “What rule applied?”
 
 ❌ Limited diagnostics: No built-in insight into which rule matched or failed.
 
@@ -202,7 +202,7 @@ LibEntity Decision was designed to mitigate these issues:
 
 ✅ Auto-generated support: `@DecisionInput` eliminates boilerplate and enforces type safety.
 
-✅ Composable matchers: Clean, reusable, and composable rule conditions like `isSet()`, `in(...)`, `gt(...)`, etc.
+✅ Composable matchers: Clean, reusable, and composable rule conditions like `isPresent()`, `in(...)`, `gt(...)`, etc.
 
 | Feature                    | Manual Java Logic      | LibEntity Decision         |
 |---------------------------|------------------------|-----------------------------|
