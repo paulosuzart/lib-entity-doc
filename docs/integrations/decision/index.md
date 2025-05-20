@@ -196,13 +196,13 @@ LibEntity Decision was designed to mitigate these issues:
 
 ✅ Declarative API: Rules are expressed as data, not control flow, making them easier to read and change.
 
-✅ Traceability: Rule matches are fully diagnosable via .diagnose(), allowing introspection into decision outcomes.
+✅ Traceability: Rule matches are fully diagnosable via `.diagnose()`, allowing introspection into decision outcomes.
 
-✅ Policied evaluation: Choose between First, Unique, or Collect evaluation strategies for different business needs.
+✅ Policied evaluation: Choose between `First`, `Unique`, `Collect` or `Sum` evaluation strategies for different business needs.
 
-✅ Auto-generated support: @DecisionInput eliminates boilerplate and enforces type safety.
+✅ Auto-generated support: `@DecisionInput` eliminates boilerplate and enforces type safety.
 
-✅ Composable matchers: Clean, reusable, and composable rule conditions like isSet(), in(...), or gt(...).
+✅ Composable matchers: Clean, reusable, and composable rule conditions like `isSet()`, `in(...)`, `gt(...)`, etc.
 
 | Feature                    | Manual Java Logic      | LibEntity Decision         |
 |---------------------------|------------------------|-----------------------------|
